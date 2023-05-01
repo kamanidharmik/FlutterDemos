@@ -1,19 +1,10 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Login_Screen extends StatefulWidget {
-  const Login_Screen({super.key});
-
-  @override
-  State<Login_Screen> createState() => _Login_ScreenState();
-}
-
-class _Login_ScreenState extends State<Login_Screen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-
+class Login_Screen extends StatelessWidget {
   GoogleSignInAccount? _userObj;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
@@ -23,26 +14,10 @@ class _Login_ScreenState extends State<Login_Screen>
       sp.setString("email", _userObj!.email.toString());
       sp.setString("name", _userObj!.displayName.toString());
     } else {
+      sp.setString("name", "Kamani Dharmik");
+      sp.setString("email", "dharmikkamani12@gmail.com");
       print("Null");
     }
-  }
-
-  getdata() async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.getString("name");
-    sp.getString("email");
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -56,16 +31,17 @@ class _Login_ScreenState extends State<Login_Screen>
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                final SharedPreferences sp =
+                    await SharedPreferences.getInstance();
+                sp.setString("name", "Kamani Dharmik");
+                sp.setString("email", "dharmikkamani12@gmail.com");
+
                 _googleSignIn.signIn().then((value) async {
-                  setState(() {
-                    print(value.toString());
-                    _userObj = value;
-                  });
-                  final SharedPreferences sp =
-                      await SharedPreferences.getInstance();
-                  sp.setString("email", _userObj!.email.toString());
-                  sp.setString("name", _userObj!.displayName.toString());
+                  _userObj = value;
+
+                  // sp.setString("email", _userObj!.email.toString());
+                  // sp.setString("name", _userObj!.displayName.toString());
                 });
               },
               child: const Text("Log in"))

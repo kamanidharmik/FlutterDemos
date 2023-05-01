@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:interview_practice/controller/recordcontroller.dart';
 import 'package:interview_practice/database/sqlite-service.dart';
 import 'package:interview_practice/views/api_screen.dart';
+import 'package:interview_practice/views/heroanim.dart';
 import 'package:interview_practice/views/insertdata.dart';
 import 'package:interview_practice/views/login_screen.dart';
 import 'package:interview_practice/views/profile_screen.dart';
@@ -53,7 +54,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: checkname != null ? const FirstScreen() : const FirstScreen(),
+      home: checkname != null ? FirstScreen() : Login_Screen(),
     );
   }
 }
@@ -69,7 +70,7 @@ class _FirstScreenState extends State<FirstScreen> {
   final recordcontroller = Get.put(Recordcontroller());
   int index = 0;
   String title = "Home";
-  List<Widget> screens = [Data(), const Profile_Screen(), ApiDemo()];
+  List<Widget> screens = [Data(), ProfileScreen()];
 
   @override
   void initState() {
@@ -89,16 +90,14 @@ class _FirstScreenState extends State<FirstScreen> {
                 if (index == 0) {
                   title = "Home";
                 } else if (index == 1) {
-                  title = "Profile";
-                } else if (index == 2) {
-                  title = "Api Demo";
+                  title = "Api Data";
                 }
               });
             },
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-              BottomNavigationBarItem(icon: Icon(Icons.menu), label: "Menu"),
-              BottomNavigationBarItem(icon: Icon(Icons.api), label: "Api Demo"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_box), label: "Profile"),
             ]),
         floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -119,46 +118,72 @@ class Data extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Obx(() {
-          return ListView.builder(
-              itemCount: recordcontroller.tasklist.length,
-              itemBuilder: ((context, index) {
-                return Card(
-                  elevation: 5,
-                  child: ListTile(
-                    leading:
-                        Text(recordcontroller.tasklist[index]["id"].toString()),
-                    title: Text(recordcontroller.tasklist[index]["taskname"]
-                        .toString()),
-                    onTap: () {
-                      Get.bottomSheet(Container(
-                        height: 150,
-                        color: Colors.white,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text("Bottom Sheet"),
-                            Text(recordcontroller.tasklist[index]["id"]
-                                .toString()),
-                            ElevatedButton(
-                                onPressed: () {
-                                  databaseService.delete(
-                                      recordcontroller.tasklist[index]["id"]);
-                                  Get.back();
-                                },
-                                child: const Text("Delete")),
-                          ],
-                        ),
-                      ));
-                      print(recordcontroller.tasklist[index]["id"].toString());
-                    },
-                  ),
-                );
-              }));
-        }));
+    return Column(
+      children: [
+        Hero(
+          tag: 'heroanim',
+          child: Image.asset(
+            "assets/images/dk.JPG",
+            height: 300,
+            width: 250,
+          ),
+        ),
+
+        ElevatedButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return ApiDemo();
+                },
+              ));
+            },
+            child: const Text("Go To Next Screen")) // Container(
+        //     height: MediaQuery.of(context).size.height,
+        //     width: MediaQuery.of(context).size.width,
+        //     child: Obx(() {
+        //       return Expanded(
+        //         child: ListView.builder(
+        //             shrinkWrap: true,
+        //             itemCount: recordcontroller.tasklist.length,
+        //             itemBuilder: ((context, index) {
+        //               return Card(
+        //                 elevation: 5,
+        //                 child: ListTile(
+        //                   leading: Text(recordcontroller.tasklist[index]["id"]
+        //                       .toString()),
+        //                   title: Text(recordcontroller.tasklist[index]
+        //                           ["taskname"]
+        //                       .toString()),
+        //                   onTap: () {
+        //                     Get.bottomSheet(Container(
+        //                       height: 150,
+        //                       color: Colors.white,
+        //                       child: Column(
+        //                         mainAxisAlignment: MainAxisAlignment.center,
+        //                         crossAxisAlignment: CrossAxisAlignment.center,
+        //                         children: [
+        //                           const Text("Bottom Sheet"),
+        //                           Text(recordcontroller.tasklist[index]["id"]
+        //                               .toString()),
+        //                           ElevatedButton(
+        //                               onPressed: () {
+        //                                 databaseService.delete(recordcontroller
+        //                                     .tasklist[index]["id"]);
+        //                                 Get.back();
+        //                               },
+        //                               child: const Text("Delete")),
+        //                         ],
+        //                       ),
+        //                     ));
+        //                     print(recordcontroller.tasklist[index]["id"]
+        //                         .toString());
+        //                   },
+        //                 ),
+        //               );
+        //             })),
+        //       );
+        //     })),
+      ],
+    );
   }
 }
