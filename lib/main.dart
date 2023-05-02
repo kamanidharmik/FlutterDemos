@@ -70,7 +70,7 @@ class _FirstScreenState extends State<FirstScreen> {
   final recordcontroller = Get.put(Recordcontroller());
   int index = 0;
   String title = "Home";
-  List<Widget> screens = [Data(), ProfileScreen()];
+  List<Widget> screens = [Data(), ProfileScreen(), ApiDemo()];
 
   @override
   void initState() {
@@ -90,6 +90,8 @@ class _FirstScreenState extends State<FirstScreen> {
                 if (index == 0) {
                   title = "Home";
                 } else if (index == 1) {
+                  title = "Profile";
+                } else if (index == 2) {
                   title = "Api Data";
                 }
               });
@@ -98,6 +100,8 @@ class _FirstScreenState extends State<FirstScreen> {
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_box), label: "Profile"),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.api_outlined), label: "Api"),
             ]),
         floatingActionButton: FloatingActionButton(
             onPressed: () {
@@ -133,11 +137,13 @@ class Data extends StatelessWidget {
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return ApiDemo();
+                  return MyWidget();
                 },
               ));
             },
-            child: const Text("Go To Next Screen")) // Container(
+            child: const Text("Go To Next Screen")),
+
+        // Container(
         //     height: MediaQuery.of(context).size.height,
         //     width: MediaQuery.of(context).size.width,
         //     child: Obx(() {

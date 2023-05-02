@@ -11,12 +11,14 @@ class MyWidget extends StatelessWidget {
       appBar: AppBar(
         title: const Text("View Hero Animation"),
       ),
-      body: Hero(
-        tag: 'heroanim',
-        child: Image.asset(
-          "assets/images/dk.JPG",
-          height: 400,
-          width: 300,
+      body: Center(
+        child: Hero(
+          tag: 'heroanim',
+          child: Image.asset(
+            "assets/images/dk.JPG",
+            height: 400,
+            width: 300,
+          ),
         ),
       ),
     );
