@@ -17,4 +17,9 @@ class Recordcontroller extends GetxController {
     tasklist.assignAll(tasks);
     update();
   }
+
+  delete(int id) {
+    databaseService.delete(id);
+    getdata();
+  }
 }

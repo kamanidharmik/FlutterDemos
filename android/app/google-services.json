@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "580855633355-8b8g1749fnkqcjpitf7nj5f6dt10loo4.apps.googleusercontent.com",
+          "client_id": "580855633355-v52n84d3d5r8t3175lfgvmjbrdqeibqc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.interview_practice",
+            "certificate_hash": "95166fb851a8b6b4700bae82a985c2351cebd686"
+          }
+        },
+        {
+          "client_id": "580855633355-fke3vvb9lqlo9k2v1vble2jadc0l4kc1.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +37,13 @@
             {
               "client_id": "580855633355-8b8g1749fnkqcjpitf7nj5f6dt10loo4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "580855633355-dd7mnpujr1fnbqe41g5j40lnre10bgmn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.interviewPractice"
+              }
             }
           ]
         }

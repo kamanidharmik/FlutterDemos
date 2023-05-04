@@ -48,15 +48,15 @@ class SqlDatabaseService {
     return id;
   }
 
-  Future<int> delete(int id) async {
+  delete(int id) async {
     final db = await _database;
-    return await db.delete(table, where: 'id = ?', whereArgs: [id]);
+    await db.delete(table, where: 'id = ?', whereArgs: [id]);
+    getItems();
   }
 
   // Update an item by id
   Future<int> updatetask(int id, String taskname) async {
     final db = await _database;
-
     final data = {
       'taskname': taskname,
     };

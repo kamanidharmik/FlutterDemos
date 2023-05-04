@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:interview_practice/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Login_Screen extends StatelessWidget {
@@ -18,6 +19,7 @@ class Login_Screen extends StatelessWidget {
       sp.setString("email", "dharmikkamani12@gmail.com");
       print("Null");
     }
+    Get.off(FirstScreen());
   }
 
   @override
@@ -39,7 +41,7 @@ class Login_Screen extends StatelessWidget {
 
                 _googleSignIn.signIn().then((value) async {
                   _userObj = value;
-
+                  setdatainpreferences();
                   // sp.setString("email", _userObj!.email.toString());
                   // sp.setString("name", _userObj!.displayName.toString());
                 });

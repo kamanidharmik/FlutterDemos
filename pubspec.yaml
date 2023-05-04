@@ -45,6 +45,8 @@ dependencies:
   google_sign_in:
   shared_preferences:
   http:
+  firebase_analytics:
+  instagram_public_api: ^0.2.3
 
 dev_dependencies:
   flutter_test:

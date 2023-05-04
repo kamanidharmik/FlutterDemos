@@ -1,15 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:interview_practice/controller/recordcontroller.dart';
 import 'package:interview_practice/database/sqlite-service.dart';
 import 'package:interview_practice/views/api_screen.dart';
 import 'package:interview_practice/views/heroanim.dart';
 import 'package:interview_practice/views/insertdata.dart';
+
 import 'package:interview_practice/views/login_screen.dart';
-import 'package:interview_practice/views/profile_screen.dart';
+import 'package:interview_practice/views/tasks.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,6 +20,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  print(analytics);
 }
 
 class MyApp extends StatefulWidget {
@@ -54,7 +59,7 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: checkname != null ? FirstScreen() : Login_Screen(),
+      home: checkname != null ? const FirstScreen() : Login_Screen(),
     );
   }
 }
@@ -72,12 +77,35 @@ class _FirstScreenState extends State<FirstScreen> {
   String title = "Home";
   List<Widget> screens = [Data(), ProfileScreen(), ApiDemo()];
 
+  String name = "Guest";
+  String email = "guest@gmail.com";
+
+  getpreferencedata() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.getString("name");
+    sp.getString("email");
+    setState(() {
+      name = sp.getString("name")!;
+      email = sp.getString("email")!;
+    });
+  }
+
+  clearpreferencesdata() async {
+    final SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.clear();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     recordcontroller.getdata();
+
+    getpreferencedata();
   }
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +118,7 @@ class _FirstScreenState extends State<FirstScreen> {
                 if (index == 0) {
                   title = "Home";
                 } else if (index == 1) {
-                  title = "Profile";
+                  title = "Sql Lite Data";
                 } else if (index == 2) {
                   title = "Api Data";
                 }
@@ -99,7 +127,7 @@ class _FirstScreenState extends State<FirstScreen> {
             items: const [
               BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.account_box), label: "Profile"),
+                  icon: Icon(Icons.account_box), label: "Sql Lite Data"),
               BottomNavigationBarItem(
                   icon: Icon(Icons.api_outlined), label: "Api"),
             ]),
@@ -111,7 +139,28 @@ class _FirstScreenState extends State<FirstScreen> {
         appBar: AppBar(
           title: Text(title),
         ),
-        drawer: const Drawer(),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              UserAccountsDrawerHeader(
+                  currentAccountPicture: const CircleAvatar(
+                    backgroundImage: NetworkImage(
+                        "https://media.licdn.com/dms/image/D4D03AQFDhvF1A7uEPw/profile-displayphoto-shrink_800_800/0/1678513895740?e=2147483647&v=beta&t=nz6lrJbnReKkL34R_VeF5QQFWFTauRaeezoWQIoVZvI"),
+                  ),
+                  accountName: Text(name),
+                  accountEmail: Text(email)),
+              ListTile(
+                title: const Text("Logout"),
+                leading: const Icon(Icons.logout),
+                onTap: () {
+                  clearpreferencesdata();
+                  _googleSignIn.signOut();
+                  Get.off(Login_Screen());
+                },
+              )
+            ],
+          ),
+        ),
         body: screens[index]);
   }
 }
@@ -132,63 +181,15 @@ class Data extends StatelessWidget {
             width: 250,
           ),
         ),
-
         ElevatedButton(
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(
                 builder: (context) {
-                  return MyWidget();
+                  return const MyWidget();
                 },
               ));
             },
             child: const Text("Go To Next Screen")),
-
-        // Container(
-        //     height: MediaQuery.of(context).size.height,
-        //     width: MediaQuery.of(context).size.width,
-        //     child: Obx(() {
-        //       return Expanded(
-        //         child: ListView.builder(
-        //             shrinkWrap: true,
-        //             itemCount: recordcontroller.tasklist.length,
-        //             itemBuilder: ((context, index) {
-        //               return Card(
-        //                 elevation: 5,
-        //                 child: ListTile(
-        //                   leading: Text(recordcontroller.tasklist[index]["id"]
-        //                       .toString()),
-        //                   title: Text(recordcontroller.tasklist[index]
-        //                           ["taskname"]
-        //                       .toString()),
-        //                   onTap: () {
-        //                     Get.bottomSheet(Container(
-        //                       height: 150,
-        //                       color: Colors.white,
-        //                       child: Column(
-        //                         mainAxisAlignment: MainAxisAlignment.center,
-        //                         crossAxisAlignment: CrossAxisAlignment.center,
-        //                         children: [
-        //                           const Text("Bottom Sheet"),
-        //                           Text(recordcontroller.tasklist[index]["id"]
-        //                               .toString()),
-        //                           ElevatedButton(
-        //                               onPressed: () {
-        //                                 databaseService.delete(recordcontroller
-        //                                     .tasklist[index]["id"]);
-        //                                 Get.back();
-        //                               },
-        //                               child: const Text("Delete")),
-        //                         ],
-        //                       ),
-        //                     ));
-        //                     print(recordcontroller.tasklist[index]["id"]
-        //                         .toString());
-        //                   },
-        //                 ),
-        //               );
-        //             })),
-        //       );
-        //     })),
       ],
     );
   }

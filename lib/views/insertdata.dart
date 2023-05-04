@@ -13,23 +13,36 @@ class Insertdata extends StatelessWidget {
         appBar: AppBar(
           title: const Text("Insert Data"),
         ),
-        body: Form(
-          key: formkey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextFormField(
-                controller: namecontroller,
-                decoration: const InputDecoration(hintText: "Enter Task Name"),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    SqlDatabaseService databaseService = SqlDatabaseService();
-                    databaseService.createItem(namecontroller.text);
-                    Get.off(() => const FirstScreen());
-                  },
-                  child: const Text("Submit"))
-            ],
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Form(
+            key: formkey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Tasks",
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                TextFormField(
+                  controller: namecontroller,
+                  decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      labelText: "Enter Task Name",
+                      hintText: "Enter Task Name"),
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      SqlDatabaseService databaseService = SqlDatabaseService();
+                      databaseService.createItem(namecontroller.text);
+                      Get.off(() => const FirstScreen());
+                    },
+                    child: const Text("Submit"))
+              ],
+            ),
           ),
         ));
   }
