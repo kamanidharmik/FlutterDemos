@@ -47,6 +47,8 @@ dependencies:
   http:
   firebase_analytics:
   instagram_public_api: ^0.2.3
+  google_mobile_ads:
+  cloud_firestore:
 
 dev_dependencies:
   flutter_test:

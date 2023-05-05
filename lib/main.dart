@@ -1,21 +1,24 @@
+import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:interview_practice/controller/recordcontroller.dart';
 import 'package:interview_practice/database/sqlite-service.dart';
 import 'package:interview_practice/views/api_screen.dart';
 import 'package:interview_practice/views/heroanim.dart';
 import 'package:interview_practice/views/insertdata.dart';
-
 import 'package:interview_practice/views/login_screen.dart';
 import 'package:interview_practice/views/tasks.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   runApp(const MyApp());
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -165,32 +168,107 @@ class _FirstScreenState extends State<FirstScreen> {
   }
 }
 
-class Data extends StatelessWidget {
+class Data extends StatefulWidget {
+  @override
+  State<Data> createState() => _DataState();
+}
+
+class _DataState extends State<Data> {
   final recordcontroller = Get.put(Recordcontroller());
+
   SqlDatabaseService databaseService = SqlDatabaseService();
+
+  BannerAd? _bannerAd;
+
+  final adUnitId = Platform.isAndroid
+      ? 'ca-app-pub-3940256099942544/6300978111'
+      : 'ca-app-pub-3940256099942544/2934735716';
+
+  void loadad() {
+    _bannerAd = BannerAd(
+        size: AdSize.banner,
+        adUnitId: adUnitId,
+        listener: BannerAdListener(
+          onAdLoaded: (ad) {
+            setState(() {
+              _bannerAd = ad as BannerAd;
+            });
+          },
+          onAdFailedToLoad: (ad, error) {
+            print("AdFailed to load ad: $error");
+          },
+        ),
+        request: const AdRequest())
+      ..load();
+  }
+
+  initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Hero(
-          tag: 'heroanim',
-          child: Image.asset(
-            "assets/images/dk.JPG",
-            height: 300,
-            width: 250,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Hero(
+            tag: 'heroanim',
+            child: Image.asset(
+              "assets/images/dk.JPG",
+              height: 300,
+              width: 250,
+            ),
           ),
-        ),
-        ElevatedButton(
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) {
-                  return const MyWidget();
-                },
-              ));
-            },
-            child: const Text("Go To Next Screen")),
-      ],
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) {
+                    return const MyWidget();
+                  },
+                ));
+              },
+              child: const Text("Go To Next Screen")),
+          Container(
+            height: 500,
+            child: StreamBuilder(
+              stream: FirebaseFirestore.instance.collection('name').snapshots(),
+              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasData) {
+                  return Expanded(
+                    child: ListView.builder(
+                      itemCount: snapshot.data!.size,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Expanded(
+                          child: ListView(
+                              shrinkWrap: true,
+                              children: snapshot.data!.docs.map((e) {
+                                return Container(
+                                  child: Text("${e['priority']} ${e['task']}"),
+                                );
+                              }).toList()),
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  print("Data is not available");
+                }
+                return const CircularProgressIndicator();
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
