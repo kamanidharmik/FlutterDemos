@@ -7,6 +7,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:interview_practice/controller/recordcontroller.dart';
 import 'package:interview_practice/database/sqlite-service.dart';
 import 'package:interview_practice/views/api_screen.dart';
+import 'package:interview_practice/views/cloud-fire-insert.dart';
 import 'package:interview_practice/views/heroanim.dart';
 import 'package:interview_practice/views/insertdata.dart';
 import 'package:interview_practice/views/login_screen.dart';
@@ -78,7 +79,7 @@ class _FirstScreenState extends State<FirstScreen> {
   final recordcontroller = Get.put(Recordcontroller());
   int index = 0;
   String title = "Home";
-  List<Widget> screens = [Data(), ProfileScreen(), ApiDemo()];
+  List<Widget> screens = [const InserttoFirebase(), ProfileScreen(), ApiDemo()];
 
   String name = "Guest";
   String email = "guest@gmail.com";
