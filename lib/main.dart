@@ -154,6 +154,13 @@ class _FirstScreenState extends State<FirstScreen> {
                   accountName: Text(name),
                   accountEmail: Text(email)),
               ListTile(
+                title: const Text("Data Screen"),
+                leading: const Icon(Icons.data_array),
+                onTap: () {
+                  Get.to(() => Data());
+                },
+              ),
+              ListTile(
                 title: const Text("Logout"),
                 leading: const Icon(Icons.logout),
                 onTap: () {
@@ -218,57 +225,57 @@ class _DataState extends State<Data> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Hero(
-            tag: 'heroanim',
-            child: Image.asset(
-              "assets/images/dk.JPG",
-              height: 300,
-              width: 250,
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Data Screen"),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Hero(
+              tag: 'heroanim',
+              child: Image.asset(
+                "assets/images/dk.JPG",
+                height: 300,
+                width: 250,
+              ),
             ),
-          ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(
-                  builder: (context) {
-                    return const MyWidget();
-                  },
-                ));
-              },
-              child: const Text("Go To Next Screen")),
-          Container(
-            height: 500,
-            child: StreamBuilder(
-              stream: FirebaseFirestore.instance.collection('name').snapshots(),
-              builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasData) {
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: snapshot.data!.size,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Expanded(
-                          child: ListView(
-                              shrinkWrap: true,
-                              children: snapshot.data!.docs.map((e) {
-                                return Container(
-                                  child: Text("${e['priority']} ${e['task']}"),
-                                );
-                              }).toList()),
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  print("Data is not available");
-                }
-                return const CircularProgressIndicator();
-              },
-            ),
-          )
-        ],
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return const MyWidget();
+                    },
+                  ));
+                },
+                child: const Text("Go To Next Screen")),
+            Container(
+              height: 500,
+              child: StreamBuilder(
+                stream:
+                    FirebaseFirestore.instance.collection('name').snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
+                    return Expanded(
+                      child: ListView(
+                          shrinkWrap: true,
+                          children: snapshot.data!.docs.map((e) {
+                            return ListTile(
+                              leading: Text("${e['id']}"),
+                              title: Text("${e['task']}"),
+                              subtitle: Text("${e['date']}"),
+                            );
+                          }).toList()),
+                    );
+                  } else {
+                    print("Data is not available");
+                  }
+                  return const CircularProgressIndicator();
+                },
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

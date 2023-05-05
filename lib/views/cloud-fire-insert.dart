@@ -27,6 +27,9 @@ class _InserttoFirebaseState extends State<InserttoFirebase> {
           "date": datecontroller.text,
         };
         db.add(data);
+        idcontroller.text = "";
+        taskcontroller.text = "";
+        datecontroller.text = "";
       }
     } else {
       print("Invalid state");
